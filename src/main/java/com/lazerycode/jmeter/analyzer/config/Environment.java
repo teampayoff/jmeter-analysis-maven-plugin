@@ -39,8 +39,12 @@ public enum Environment {
   public static final String SAMPLE_ELEMENT_NAME = "sample";
 
   public static final int DEFAULT_MAXSAMPLES = 50000;
+  public static final String DEFAULT_THROUGHPUT_UNITS = "seconds";
+  public static final String THROUGHPUT_MINS = "minutes";
 
   public static final String ISO8601_FORMAT = "yyyyMMdd'T'HHmmssZ";
+
+  private String throughputScale;
 
 
 
@@ -89,6 +93,7 @@ public enum Environment {
     this.remoteResourcesFromUntilDateFormat = ISO8601_FORMAT;
     this.configurationCharts = new ConfigurationCharts();
     this.checkResult = new CheckResult();
+    this.throughputScale = DEFAULT_THROUGHPUT_UNITS;
   }
 
   public File getTargetDirectory() {
@@ -146,6 +151,11 @@ public enum Environment {
   public void setMaxSamples(int maxSamples) {
     this.maxSamples = maxSamples;
   }
+
+  // Added this to allow us to measure throughput in requests per minute, if needed, for lower traffic sites/services.
+  public String getThroughputScale() { return throughputScale; }
+
+  public void setThroughputScale(String throughputScale) { this.throughputScale = throughputScale; }
 
   public Configuration getConfiguration() {
     return configuration;

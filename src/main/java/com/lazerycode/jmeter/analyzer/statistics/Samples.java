@@ -1,6 +1,8 @@
 package com.lazerycode.jmeter.analyzer.statistics;
 
+import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 import java.util.*;
+
 
 /**
  * Collects samples (as a sequence of values of type "long") and provides the following values:
@@ -59,6 +61,9 @@ public class Samples {
 
   // The value histogram
   private Map<Long, ValueCount> histogram;
+
+  // The throughput scale
+  private String throughputScale = ENVIRONMENT.getThroughputScale();
 
 
   // ----------------------
@@ -274,6 +279,16 @@ public class Samples {
     return getSuccessCount() / duration;
   }
 
+  public long getSuccessPerMinute() {
+    assertFinished();
+    long duration = getDuration();
+    if( duration == 0 ) {
+      return 0; // shouldn't happen
+    }
+
+    return getSuccessCount() * 60 / duration;
+  }
+
   /**
    * @return The duration in s
    */
@@ -436,5 +451,10 @@ public class Samples {
     samples = newSamples;
     timestamps = newTimestamps;
   }
+
+  public String getThroughputScale(){
+    return throughputScale;
+  }
+
 
 }

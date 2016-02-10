@@ -5,6 +5,7 @@ package com.lazerycode.jmeter.checker;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import org.apache.maven.plugin.MojoFailureException;
@@ -26,16 +27,32 @@ public class ResultChecker {
             AggregatedResponses aggregatedResponses = jmeterResults.get(key);
             CheckResult checkResult = getCheckResult(key);
 
+            // Normalize our throughput scale and use it to set our getSuccesses method
+
+            String scale = "";
+            if (ENVIRONMENT.getThroughputScale().toLowerCase().equals("minutes") ||
+                    ENVIRONMENT.getThroughputScale().toLowerCase().equals("mins"))
+                ENVIRONMENT.setThroughputScale("minutes");
+            else
+                ENVIRONMENT.setThroughputScale("seconds");
+
             // Check throughput
             check &= checkValue(checkResult.getThroughput(),
-                    aggregatedResponses.getDuration().getSuccessPerSecond(),
-                    key, "throughput");
+                  ENVIRONMENT.getThroughputScale().toLowerCase().equals("minutes") ?
+                          aggregatedResponses.getDuration().getSuccessPerMinute() :
+                          aggregatedResponses.getDuration().getSuccessPerSecond(), key, "throughput");
 
             // Check errors
             double percentErrors = (((double) aggregatedResponses.getDuration().getErrorsCount()) /
                     (aggregatedResponses.getDuration().getErrorsCount() + aggregatedResponses.getDuration().getSuccessCount())) * 100;
             check &= checkValue(checkResult.getErrors(), percentErrors,
                     key, "errors");
+
+            // Check Avg Response Time
+            double avgResponseTime = (((double) aggregatedResponses.getDuration().getTotal() /
+                    (aggregatedResponses.getDuration().getSuccessCount())));
+            avgResponseTime = new BigDecimal(avgResponseTime).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+            check &= checkValue(checkResult.getResponseTimeAvg(), avgResponseTime, key, "responseTimeAvg");
         }
 
         if (!check) {

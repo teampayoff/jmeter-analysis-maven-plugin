@@ -1,6 +1,7 @@
 <#ftl/>
 <#setting locale="en_US">
 <#-- @ftlvariable name="key" type="java.lang.String" -->
+<#-- @ftlvariable name="scale" type="java.lang.String" -->
 <#-- @ftlvariable name="aggregatedResponses" type="com.lazerycode.jmeter.analyzer.parser.AggregatedResponses" -->
 <#-- @ftlvariable name="bytes" type="com.lazerycode.jmeter.analyzer.statistics.Samples" -->
 <#-- @ftlvariable name="requests" type="com.lazerycode.jmeter.analyzer.statistics.Samples" -->
@@ -8,11 +9,19 @@
 <#-- @ftlvariable name="K_99_PERCENT" type="java.lang.Integer" -->
 <#-- @ftlvariable name="K_99_PONT_9_PERCENT" type="java.lang.Integer" -->
 <#-- @ftlvariable name="PERCENT_100" type="java.lang.Integer" -->
+<#-- @ftlvariable name="samplesSuccess" type="java.lang.Long" -->
+<#if requests.throughputScale == "minutes">
+    <#assign samplesSuccess = requests.successPerMinute>
+    <#assign scale = "minute">
+<#else>
+    <#assign samplesSuccess = requests.successPerSecond>
+    <#assign scale = "second">
+</#if>
 Group: ${key}
   time: ${aggregatedResponses.startDate?date?string} - ${aggregatedResponses.endDate?date?string}
   total duration:       ${requests.duration}
   requests:             ${requests.successCount + requests.errorsCount}
-  requests per second:  ${requests.successPerSecond}
+  requests per ${scale}:  ${samplesSuccess}
   failed requests:      ${requests.errorsCount}
   <#if (requests.successCount > 0) >
   response duration (ms)

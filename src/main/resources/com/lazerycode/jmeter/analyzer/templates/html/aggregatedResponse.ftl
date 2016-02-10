@@ -2,9 +2,18 @@
 <#setting locale="en_US">
 <#setting url_escaping_charset='UTF-8'>
 <#-- @ftlvariable name="key" type="java.lang.String" -->
+<#-- @ftlvariable name="scale" type="java.lang.String" -->
 <#-- @ftlvariable name="aggregatedResponses" type="com.lazerycode.jmeter.analyzer.parser.AggregatedResponses" -->
 <#-- @ftlvariable name="bytes" type="com.lazerycode.jmeter.analyzer.statistics.Samples" -->
 <#-- @ftlvariable name="requests" type="com.lazerycode.jmeter.analyzer.statistics.Samples" -->
+<#-- @ftlvariable name="samplesSuccess" type="java.lang.Long" -->
+<#if requests.throughputScale == "minutes">
+    <#assign samplesSuccess = requests.successPerMinute>
+    <#assign scale = "minute">
+<#else>
+    <#assign samplesSuccess = requests.successPerSecond>
+    <#assign scale = "second">
+</#if>
 <#-- @ftlvariable name="Q_QUANTILES" type="java.lang.Integer" -->
 <#-- @ftlvariable name="K_99_PERCENT" type="java.lang.Integer" -->
 <#-- @ftlvariable name="K_99_PONT_9_PERCENT" type="java.lang.Integer" -->
@@ -32,8 +41,8 @@
           <td>${requests.successCount + requests.errorsCount}</td>
         </tr>
         <tr>
-          <td>Requests per second</td>
-          <td>${requests.successPerSecond}</td>
+          <td>Requests per ${scale}</td>
+          <td>${samplesSuccess}</td>
         </tr>
         <tr>
           <td>Failed requests</td>

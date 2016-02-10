@@ -1,5 +1,16 @@
 <#ftl/>
+<#-- @ftlvariable name="scale" type="java.util.String" -->
+<#-- @ftlvariable name="data" type="java.lang.Object" -->
 <#-- @ftlvariable name="self" type="java.util.Map<java.lang.String, com.lazerycode.jmeter.analyzer.statistics.Samples>" -->
+<#list self?keys as key>
+  <#assign data=self(key)/>
+  <#if data.throughputScale="minutes">
+    <#assign scale="perminute"/>
+  <#else>
+    <#assign scale="persecond"/>
+  </#if>
+</#list>
+
 <html>
 <head>
   <title>Detailed Results</title>
@@ -67,7 +78,7 @@
       <th>average</th>
       <th>max</th>
       <th>standarddeviation</th>
-      <th>persecond</th>
+      <th>${scale}</th>
       <th>success</th>
       <th>errors</th>
     </tr>

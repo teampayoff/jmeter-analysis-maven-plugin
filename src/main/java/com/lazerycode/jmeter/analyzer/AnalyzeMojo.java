@@ -105,6 +105,12 @@ public class AnalyzeMojo extends AbstractMojo {
                            HTTPSAMPLE_ELEMENT_NAME,
                            SAMPLE_ELEMENT_NAME
                          }));
+  /**
+   * Most systems under test are probably going to want to view their throughput in requests per second (default).  Lucky them!
+   * Other sites are going to want to use minutes...so we'll take this value from the pom file profiles if need be.
+   */
+  @Parameter(defaultValue="seconds")
+  private String throughputScale;
 
   /**
    * Request groups as a mapping from "group name" to "ant pattern".
@@ -282,6 +288,7 @@ public class AnalyzeMojo extends AbstractMojo {
     ENVIRONMENT.setSampleNames(sampleNames);
     ENVIRONMENT.setConfigurationCharts(configurationCharts);
     ENVIRONMENT.setCheckResult(checkResult);
+    ENVIRONMENT.setThroughputScale(throughputScale);
   }
 
   /**

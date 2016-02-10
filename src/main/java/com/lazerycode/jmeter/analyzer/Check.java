@@ -26,9 +26,7 @@ public class Check {
         return maxValue;
     }
 
-    public double getThreshold() {
-        return threshold;
-    }
+    public double getThreshold() { return threshold; }
 
     public void setThreshold(double threshold) {
         this.threshold = threshold;
@@ -65,7 +63,10 @@ public class Check {
     }
 
     private void updateMinMaxValue() {
-        if (ToleranceDirection.UPPER_TOLERANCE.equals(toleranceDirection) || ToleranceDirection.UPPER_LOWER_TOLERANCE.equals(toleranceDirection)) {
+        if (ToleranceDirection.UPPER_TOLERANCE.equals(toleranceDirection)
+                || ToleranceDirection.UPPER_LOWER_TOLERANCE.equals(toleranceDirection)
+                || ToleranceDirection.RESPONSE_TIME_TOLERANCE.equals(toleranceDirection)) {
+
             maxValue = threshold + (threshold * tolerance / 100);
         } else if (ToleranceDirection.UPPER.equals(toleranceDirection)) {
             maxValue = Double.MAX_VALUE;
@@ -75,7 +76,7 @@ public class Check {
 
         if (ToleranceDirection.LOWER_TOLERANCE.equals(toleranceDirection) || ToleranceDirection.UPPER_LOWER_TOLERANCE.equals(toleranceDirection)) {
             minValue = threshold - (threshold * tolerance / 100);
-        } else if (ToleranceDirection.LOWER.equals(toleranceDirection)) {
+        } else if (ToleranceDirection.LOWER.equals(toleranceDirection) || ToleranceDirection.RESPONSE_TIME_TOLERANCE.equals(toleranceDirection)) {
             minValue = 0;
         } else {
             minValue = threshold;
@@ -83,7 +84,7 @@ public class Check {
     }
 
     enum ToleranceDirection {
-        UPPER, LOWER, UPPER_TOLERANCE, LOWER_TOLERANCE, UPPER_LOWER_TOLERANCE, EQUALS;
+        UPPER, LOWER, UPPER_TOLERANCE, LOWER_TOLERANCE, UPPER_LOWER_TOLERANCE, EQUALS, RESPONSE_TIME_TOLERANCE
     }
 
 }

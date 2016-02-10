@@ -167,8 +167,13 @@ public class ChartWriter extends WriterBase {
       List<Long> samples = new ArrayList<Long>(throughput.values());
 
       long minTimestamp = convert(aggregatedResponses.getActiveThreads().getMinTimestamp());
+      String units = "";
+      if (ENVIRONMENT.getThroughputScale().toLowerCase().equals("minutes"))
+          units = "Requests req/m";
+      else
+          units = "Requests req/s";
 
-      XYPlot plot = ChartUtil.createDatePlot("Requests (req/s)");
+      XYPlot plot = ChartUtil.createDatePlot(units);
       ChartUtil.addDatasetRender(plot, new XYSeriesCollection(
               createAverageValuesSeries(AVERAGE, timestamps, samples, minTimestamp)), ChartUtil.createLineAndShapeRenderer());
       return ChartUtil.addDatasetRender(plot, new XYSeriesCollection(
